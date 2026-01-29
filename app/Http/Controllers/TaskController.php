@@ -28,13 +28,13 @@ class TaskController extends Controller
 
     
 
-    
+    //afiche le formulaire de creation
     public function create()
     {
         return view('tasks.create');
     }
 
-    //creation
+    
     public function store(Request $request)
     {
         try {
@@ -81,17 +81,59 @@ class TaskController extends Controller
     {
         //
     }
-
-    //modifier 
-    public function edit(string $id)
+    //edit
+    public function edit(Task $task)
     {
-        //
+        // Vérification que l'utilisateur est propriétaire
+        if ($task->user_id !== auth()->id()) {
+            return redirect()
+                ->route('tasks.index')
+                ->with('error', 'Vous n\'êtes pas autorisé à modifier cette tâche.');
+        }
+        
+        return view('tasks.edit', compact('task'));
     }
 
-   //modifier
-    public function update(Request $request, string $id)
+    //update
+    public function update(Request $request, Task $task)
     {
-        //
+        // Vérification que l'utilisateur est propriétaire
+        if ($task->user_id !== auth()->id()) {
+            return redirect()
+                ->route('tasks.index')
+                ->with('error', 'Vous n\'êtes pas autorisé à modifier cette tâche.');
+        }
+
+        try {
+            // Validation des données
+            $validated = $request->validate([
+                'title' => 'required|string|max:255',
+                'description' => 'nullable|string',
+                'deadline' => 'nullable|date|after_or_equal:today',
+                'priority' => 'required|in:basse,moyenne,haute',
+                'status' => 'required|in:à_faire,en_cours,en_revue,terminé',
+            ]);
+
+            // Mise à jour de la tâche
+            $task->update([
+                'title' => $validated['title'],
+                'description' => $validated['description'],
+                'deadline' => $validated['deadline'],
+                'priority' => $validated['priority'],
+                'status' => $validated['status'],
+            ]);
+
+            // Message succès et redirection
+            return redirect()
+                ->route('tasks.index')
+                ->with('success', 'Tâche mise à jour avec succès!');
+                
+        } catch (\Exception $e) {
+            // En cas d'erreur, rediriger avec message d'erreur
+            return redirect()
+                ->route('tasks.index')
+                ->with('error', 'Erreur lors de la mise à jour: ' . $e->getMessage());
+        }
     }
 
     //suprimer

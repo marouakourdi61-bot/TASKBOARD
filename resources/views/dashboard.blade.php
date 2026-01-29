@@ -128,11 +128,11 @@
                                             px-2 py-1 rounded">
                                             {{ ucfirst($tache->priority) }}
                                         </span>
-                                        <button class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+                                        <a href="{{ route('tasks.edit', $tache->id) }}" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"/>
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
                                             </svg>
-                                        </button>
+                                        </a>
                                     </div>
                                     <h4 class="font-medium text-gray-900 dark:text-white mb-2 text-sm">{{ $tache->title }}</h4>
                                     @if($tache->description)
@@ -235,29 +235,46 @@
                     </div>
                     
                     <div class="p-4 space-y-3">
-                        <!-- Task Card 3 -->
-                        <div class="bg-white dark:bg-gray-700 rounded-lg p-4 shadow-sm border border-blue-200 dark:border-blue-600 cursor-pointer hover:shadow-md transition-shadow">
-                            <div class="flex items-start justify-between mb-2">
-                                <span class="text-xs font-medium text-red-600 bg-red-100 dark:bg-red-900 px-2 py-1 rounded">Haute</span>
-                                <button class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"/>
-                                    </svg>
-                                </button>
-                            </div>
-                            <h4 class="font-medium text-gray-900 dark:text-white mb-2">Développer le module d'authentification</h4>
-                            <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">Implémenter OAuth2 et JWT</p>
-                            <div class="flex items-center justify-between">
-                                <div class="flex -space-x-2">
+                        @if($tachesEnCours->count() > 0)
+                            @foreach($tachesEnCours as $tache)
+                                <div class="bg-white dark:bg-gray-700 rounded-lg p-4 shadow-sm border border-blue-200 dark:border-blue-600 cursor-pointer hover:shadow-md transition-shadow">
+                                    <div class="flex items-start justify-between mb-2">
+                                        <span class="text-xs font-medium 
+                                            @if($tache->priority == 'haute')
+                                                text-red-600 bg-red-100 dark:bg-red-900
+                                            @elseif($tache->priority == 'moyenne')
+                                                text-yellow-600 bg-yellow-100 dark:bg-yellow-900
+                                            @else
+                                                text-green-600 bg-green-100 dark:bg-green-900
+                                            @endif
+                                            px-2 py-1 rounded">
+                                            {{ ucfirst($tache->priority) }}
+                                        </span>
+                                        <a href="{{ route('tasks.edit', $tache->id) }}" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                                            </svg>
+                                        </a>
+                                    </div>
+                                    <h4 class="font-medium text-gray-900 dark:text-white mb-2 text-sm">{{ $tache->title }}</h4>
+                                    @if($tache->description)
+                                        <p class="text-xs text-gray-600 dark:text-gray-400 mb-3">{{ Str::limit($tache->description, 80) }}</p>
+                                    @endif
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex -space-x-2">
+                                        </div>
+                                        @if($tache->deadline)
+                                            <div class="flex items-center text-xs text-gray-500 dark:text-gray-400">
+                                                <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                                </svg>
+                                                {{ $tache->deadline->format('d M') }}
+                                            </div>
+                                        @endif
+                                    </div>
                                 </div>
-                                <div class="flex items-center text-xs text-gray-500 dark:text-gray-400">
-                                    <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                                    </svg>
-                                    20 Jan
-                                </div>
-                            </div>
-                        </div>
+                            @endforeach
+                        @endif
 
                         <!-- Add Task Button -->
                         <button class="w-full p-3 border-2 border-dashed border-blue-300 dark:border-blue-600 rounded-lg text-blue-600 dark:text-blue-400 hover:border-blue-400 dark:hover:border-blue-500 hover:text-blue-700 dark:hover:text-blue-300 transition-colors flex items-center justify-center">
