@@ -39,20 +39,22 @@
             </div>
 
             <!-- Kanban Board -->
-            <div class="space-y-6">
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    <!-- À Faire Column -->
-                    <div class="bg-gray-100 dark:bg-gray-800 rounded-lg p-6">
-                        <!-- Add Task Button at Top -->
-                        
-                        
-                        <div class="space-y-4">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <!-- À Faire Column -->
-                <div class="bg-gray-100 dark:bg-gray-800 rounded-lg p-6">
-                    <div class="flex items-center justify-between mb-6">
-                        <h3 class="font-semibold text-lg text-gray-900 dark:text-white flex items-center">
-                            <span class="w-3 h-3 bg-gray-500 rounded-full mr-3"></span>
-                            {{ __('À Faire') }}
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+                    <div class="p-4 border-b border-gray-200 dark:border-gray-700">
+                        <div class="flex items-center justify-between">
+                            <h3 class="font-semibold text-gray-900 dark:text-white flex items-center">
+                                <span class="w-2 h-2 bg-gray-400 rounded-full mr-2"></span>
+                                {{ __('À Faire') }}
+                                <span class="ml-2 text-xs text-gray-500">(3)</span>
+                            </h3>
+                            <button class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                                </svg>
+                            </button>
+                        </div>
                             <span class="ml-3 text-sm font-normal text-gray-500 dark:text-gray-400">(3)</span>
                         </h3>
                         <button class="px-3 py-1 text-sm bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors">
@@ -60,62 +62,54 @@
                         </button>
                     </div>
                     
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                        <!-- Task Card 1 -->
-                        <div class="bg-white dark:bg-gray-700 rounded-lg p-4 shadow-sm border border-gray-200 dark:border-gray-600 cursor-pointer hover:shadow-md transition-shadow">
-                            <div class="flex items-start justify-between mb-2">
-                                <span class="text-xs font-medium text-red-600 bg-red-100 dark:bg-red-900 px-2 py-1 rounded">Haute</span>
-                                <button class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"/>
-                                    </svg>
-                                </button>
-                            </div>
-                            <h4 class="font-medium text-gray-900 dark:text-white mb-2">Optimiser les performances de la base de données</h4>
-                            <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">Analyser et optimiser les requêtes SQL lentes</p>
-                            <div class="flex items-center justify-between">
-                                <div class="flex -space-x-2">
-                                   
+                    <div class="p-4 space-y-3">
+                        @if($tachesAFaire->count() > 0)
+                            @foreach($tachesAFaire as $tache)
+                                <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4 border border-gray-200 dark:border-gray-600 cursor-pointer hover:shadow-sm transition-shadow">
+                                    <div class="flex items-start justify-between mb-2">
+                                        <span class="text-xs font-medium 
+                                            @if($tache->priority == 'haute')
+                                                text-red-600 bg-red-100 dark:bg-red-900
+                                            @elseif($tache->priority == 'moyenne')
+                                                text-yellow-600 bg-yellow-100 dark:bg-yellow-900
+                                            @else
+                                                text-green-600 bg-green-100 dark:bg-green-900
+                                            @endif
+                                            px-2 py-1 rounded">
+                                            {{ ucfirst($tache->priority) }}
+                                        </span>
+                                        <button class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"/>
+                                            </svg>
+                                        </button>
+                                    </div>
+                                    <h4 class="font-medium text-gray-900 dark:text-white mb-2 text-sm">{{ $tache->title }}</h4>
+                                    @if($tache->description)
+                                        <p class="text-xs text-gray-600 dark:text-gray-400 mb-3">{{ Str::limit($tache->description, 80) }}</p>
+                                    @endif
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex -space-x-2">
+                                        </div>
+                                        @if($tache->deadline)
+                                            <div class="flex items-center text-xs text-gray-500 dark:text-gray-400">
+                                                <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                                </svg>
+                                                {{ $tache->deadline->format('d/m') }}
+                                            </div>
+                                        @endif
+                                    </div>
                                 </div>
-                                <div class="flex items-center text-xs text-gray-500 dark:text-gray-400">
-                                    <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                                    </svg>
-                                    15 Jan
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Task Card 2 -->
-                        <div class="bg-white dark:bg-gray-700 rounded-lg p-4 shadow-sm border border-gray-200 dark:border-gray-600 cursor-pointer hover:shadow-md transition-shadow">
-                            <div class="flex items-start justify-between mb-2">
-                                <span class="text-xs font-medium text-yellow-600 bg-yellow-100 dark:bg-yellow-900 px-2 py-1 rounded">Moyenne</span>
-                                <button class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"/>
-                                    </svg>
-                                </button>
-                            </div>
-                            <h4 class="font-medium text-gray-900 dark:text-white mb-2">Mettre à jour la documentation API</h4>
-                            <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">Documenter tous les endpoints REST</p>
-                            <div class="flex items-center justify-between">
-                                <div class="flex -space-x-2">
-                                </div>
-                                <div class="flex items-center text-xs text-gray-500 dark:text-gray-400">
-                                    <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                                    </svg>
-                                    18 Jan
-                                </div>
-                            </div>
-                        </div>
+                            @endforeach
+                        @endif
 
                         <!-- Add Task Button -->
                         <button class="w-full p-3 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg text-gray-600 dark:text-gray-400 hover:border-gray-400 dark:hover:border-gray-500 hover:text-gray-900 dark:hover:text-white transition-colors flex items-center justify-center">
                             <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
                             </svg>
-                            {{ __('Ajouter une tâche') }}
+                            <span class="text-sm">{{ __('Ajouter une tâche') }}</span>
                         </button>
                     </div>
                 </div>
@@ -133,7 +127,7 @@
                         </button>
                     </div>
                     
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                    <div class="p-4 space-y-3">
                         <!-- Task Card 3 -->
                         <div class="bg-white dark:bg-gray-700 rounded-lg p-4 shadow-sm border border-blue-200 dark:border-blue-600 cursor-pointer hover:shadow-md transition-shadow">
                             <div class="flex items-start justify-between mb-2">
@@ -183,7 +177,7 @@
                         </button>
                     </div>
                     
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                    <div class="p-4 space-y-3">
                         <!-- Task Card 6 -->
                         <div class="bg-white dark:bg-gray-700 rounded-lg p-4 shadow-sm border border-green-200 dark:border-green-600 cursor-pointer hover:shadow-md transition-shadow opacity-75">
                             <div class="flex items-start justify-between mb-2">
