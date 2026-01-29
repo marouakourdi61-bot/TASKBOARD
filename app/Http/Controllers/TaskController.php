@@ -28,49 +28,73 @@ class TaskController extends Controller
 
     
 
-    /**
-     * Show the form for creating a new resource.
-     */
+    
     public function create()
     {
-        //
+        return view('tasks.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
+    //creation
     public function store(Request $request)
     {
-        //
+        try {
+            // Validation 
+            $validated = $request->validate([
+                'title' => 'required|string|max:255',
+                'description' => 'nullable|string',
+                'deadline' => 'nullable|date|after_or_equal:today',
+                'priority' => 'required|in:basse,moyenne,haute',
+                'status' => 'required|in:à_faire,en_cours,en_revue,terminé',
+            ]);
+
+            // Création avec propriétai
+            $task = Task::create([
+                'title' => $validated['title'],
+                'description' => $validated['description'],
+                'deadline' => $validated['deadline'],
+                'priority' => $validated['priority'],
+                'status' => $validated['status'], 
+                'user_id' => auth()->id(), 
+            ]);
+
+            // Message succès  
+            return redirect()
+                ->route('dashboard')
+                ->with('success', 'Tâche créée avec succès!');
+                
+        }
+         //  message d'erreur
+         catch (\Exception $e) {
+            return redirect()
+                ->route('dashboard')
+                ->with('error', 'Erreur lors de la création: ' . $e->getMessage());
+        }
     }
 
-    /**
-     * Display the specified resource.
-     */
+
+
+
+
+    
+    //afficher resource
     public function show(string $id)
     {
         //
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
+    //modifier 
     public function edit(string $id)
     {
         //
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
+   //modifier
     public function update(Request $request, string $id)
     {
         //
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
+    //suprimer
     public function destroy(string $id)
     {
         //

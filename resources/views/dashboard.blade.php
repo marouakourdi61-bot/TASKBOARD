@@ -47,19 +47,69 @@
                             <h3 class="font-semibold text-gray-900 dark:text-white flex items-center">
                                 <span class="w-2 h-2 bg-gray-400 rounded-full mr-2"></span>
                                 {{ __('À Faire') }}
-                                <span class="ml-2 text-xs text-gray-500">(3)</span>
+                                <span class="ml-2 text-xs text-gray-500">({{ $tachesAFaire->count() }})</span>
                             </h3>
-                            <button class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+                            <button id="addTaskAFaire" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
                                 </svg>
                             </button>
                         </div>
-                            <span class="ml-3 text-sm font-normal text-gray-500 dark:text-gray-400">(3)</span>
-                        </h3>
-                        <button class="px-3 py-1 text-sm bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors">
-                            {{ __('Ajouter une tâche') }}
-                        </button>
+                    </div>
+                    
+                    <!-- Formulaire pour À Faire -->
+                    <div id="formAFaire" class="hidden p-4 border-b border-gray-200 dark:border-gray-700">
+                        <form method="POST" action="{{ route('tasks.store') }}">
+                            @csrf
+                            <input type="hidden" name="status" value="à_faire">
+                            
+                            <div class="space-y-3">
+                                <input 
+                                    type="text" 
+                                    name="title" 
+                                    required
+                                    class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 dark:bg-gray-700 dark:text-white text-sm"
+                                    placeholder="Titre de la tâche..."
+                                >
+                                
+                                <textarea 
+                                    name="description" 
+                                    rows="2"
+                                    class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 dark:bg-gray-700 dark:text-white text-sm"
+                                    placeholder="Description (optionnel)..."
+                                ></textarea>
+                                
+                                <div class="grid grid-cols-2 gap-2">
+                                    <input 
+                                        type="date" 
+                                        name="deadline"
+                                        min="{{ now()->format('Y-m-d') }}"
+                                        class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 dark:bg-gray-700 dark:text-white text-sm"
+                                    >
+                                    
+                                    <select 
+                                        name="priority"
+                                        required
+                                        class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 dark:bg-gray-700 dark:text-white text-sm"
+                                    >
+                                        <option value="">Priorité</option>
+                                        <option value="basse">Basse</option>
+                                        <option value="moyenne" selected>Moyenne</option>
+                                        <option value="haute">Haute</option>
+                                    </select>
+                                </div>
+                                
+                                                                
+                                <div class="flex justify-end space-x-2">
+                                    <button type="button" onclick="cancelFormAFaire()" class="px-3 py-1 text-sm border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded hover:bg-gray-50 dark:hover:bg-gray-700">
+                                        Annuler
+                                    </button>
+                                    <button type="submit" class="px-3 py-1 text-sm bg-gray-600 text-white rounded hover:bg-gray-700">
+                                        Ajouter
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
                     </div>
                     
                     <div class="p-4 space-y-3">
@@ -120,11 +170,68 @@
                         <h3 class="font-semibold text-lg text-gray-900 dark:text-white flex items-center">
                             <span class="w-3 h-3 bg-blue-500 rounded-full mr-3"></span>
                             {{ __('En Cours') }}
-                            <span class="ml-3 text-sm font-normal text-gray-500 dark:text-gray-400">(2)</span>
+                            <span class="ml-3 text-sm font-normal text-gray-500 dark:text-gray-400">({{ $tachesEnCours->count() }})</span>
                         </h3>
-                        <button class="px-3 py-1 text-sm bg-blue-200 dark:bg-blue-900 text-blue-700 dark:text-blue-300 rounded-lg hover:bg-blue-300 dark:hover:bg-blue-800 transition-colors">
-                            {{ __('Ajouter une tâche') }}
+                        <button id="addTaskEnCours" class="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                            </svg>
                         </button>
+                    </div>
+                    
+                    <!-- Formulaire pour En Cours -->
+                    <div id="formEnCours" class="hidden p-4 border-b border-blue-200 dark:border-blue-700">
+                        <form method="POST" action="{{ route('tasks.store') }}">
+                            @csrf
+                            <input type="hidden" name="status" value="en_cours">
+                            
+                            <div class="space-y-3">
+                                <input 
+                                    type="text" 
+                                    name="title" 
+                                    required
+                                    class="w-full px-3 py-2 border border-blue-300 dark:border-blue-600 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white text-sm"
+                                    placeholder="Titre de la tâche..."
+                                >
+                                
+                                <textarea 
+                                    name="description" 
+                                    rows="2"
+                                    class="w-full px-3 py-2 border border-blue-300 dark:border-blue-600 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white text-sm"
+                                    placeholder="Description (optionnel)..."
+                                ></textarea>
+                                
+                                <div class="grid grid-cols-2 gap-2">
+                                    <input 
+                                        type="date" 
+                                        name="deadline"
+                                        min="{{ now()->format('Y-m-d') }}"
+                                        class="w-full px-3 py-2 border border-blue-300 dark:border-blue-600 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white text-sm"
+                                    >
+                                    
+                                    <select 
+                                        name="priority"
+                                        required
+                                        class="w-full px-3 py-2 border border-blue-300 dark:border-blue-600 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white text-sm"
+                                    >
+                                        <option value="">Priorité</option>
+                                        <option value="basse">Basse</option>
+                                        <option value="moyenne" selected>Moyenne</option>
+                                        <option value="haute">Haute</option>
+                                    </select>
+                                </div>
+                                
+                                                                
+                                <div class="flex justify-end space-x-2">
+                                    <button type="button" onclick="cancelFormEnCours()" class="px-3 py-1 text-sm border border-blue-300 dark:border-blue-600 text-blue-700 dark:text-blue-300 rounded hover:bg-blue-50 dark:hover:bg-blue-900">
+                                        Annuler
+                                    </button>
+                                    <button type="submit" class="px-3 py-1 text-sm bg-blue-600 text-white rounded hover:bg-blue-700">
+                                        Ajouter
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
                     </div>
                     
                     <div class="p-4 space-y-3">
@@ -213,27 +320,70 @@
                 </div>
             </div>
 
-            <!-- Quick Stats Bar -->
-            <div class="mt-8 bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4">
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    <div class="text-center">
-                        <div class="text-2xl font-bold text-gray-900 dark:text-white">10</div>
-                        <div class="text-sm text-gray-600 dark:text-gray-400">{{ __('Tâches totales') }}</div>
-                    </div>
-                    <div class="text-center">
-                        <div class="text-2xl font-bold text-blue-600 dark:text-blue-400">2</div>
-                        <div class="text-sm text-gray-600 dark:text-gray-400">{{ __('En cours') }}</div>
-                    </div>
-                    <div class="text-center">
-                        <div class="text-2xl font-bold text-yellow-600 dark:text-yellow-400">1</div>
-                        <div class="text-sm text-gray-600 dark:text-gray-400">{{ __('En revue') }}</div>
-                    </div>
-                    <div class="text-center">
-                        <div class="text-2xl font-bold text-green-600 dark:text-green-400">4</div>
-                        <div class="text-sm text-gray-600 dark:text-gray-400">{{ __('Terminées') }}</div>
-                    </div>
+            
+            <!-- Messages de succès/erreur -->
+            @if(session('success'))
+                <div class="mt-4 bg-green-50 dark:bg-green-900 border border-green-200 dark:border-green-700 text-green-800 dark:text-green-200 px-4 py-3 rounded-lg">
+                    {{ session('success') }}
                 </div>
-            </div>
+            @endif
+            
+            @if(session('error'))
+                <div class="mt-4 bg-red-50 dark:bg-red-900 border border-red-200 dark:border-red-700 text-red-800 dark:text-red-200 px-4 py-3 rounded-lg">
+                    {{ session('error') }}
+                </div>
+            @endif
         </div>
     </div>
+
+    <script>
+        // Formulaire À Faire
+        document.getElementById('addTaskAFaire').addEventListener('click', function() {
+            const form = document.getElementById('formAFaire');
+            form.classList.toggle('hidden');
+            if (!form.classList.contains('hidden')) {
+                form.querySelector('input[name="title"]').focus();
+            }
+        });
+
+        function cancelFormAFaire() {
+            document.getElementById('formAFaire').classList.add('hidden');
+            document.querySelector('#formAFaire form').reset();
+        }
+
+        // Formulaire En Cours
+        document.getElementById('addTaskEnCours').addEventListener('click', function() {
+            const form = document.getElementById('formEnCours');
+            form.classList.toggle('hidden');
+            if (!form.classList.contains('hidden')) {
+                form.querySelector('input[name="title"]').focus();
+            }
+        });
+
+        function cancelFormEnCours() {
+            document.getElementById('formEnCours').classList.add('hidden');
+            document.querySelector('#formEnCours form').reset();
+        }
+
+        
+        // Handle form submission with loading state pour tous les formulaires
+        document.querySelectorAll('form').forEach(form => {
+            form.addEventListener('submit', function(e) {
+                const submitBtn = this.querySelector('button[type="submit"]');
+                if (submitBtn) {
+                    const originalText = submitBtn.innerHTML;
+                    
+                    // Show loading state
+                    submitBtn.innerHTML = `
+                        <svg class="animate-spin h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        Création...
+                    `;
+                    submitBtn.disabled = true;
+                }
+            });
+        });
+    </script>
 </x-app-layout>

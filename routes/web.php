@@ -28,6 +28,8 @@ Route::middleware('auth')->group(function () {
 
     // Routes pour les tâches
     Route::get('/taches', [TaskController::class, 'index'])->name('tasks.index');
+    Route::get('/taches/creer', [TaskController::class, 'create'])->name('tasks.create');
+    Route::post('/taches', [TaskController::class, 'store'])->name('tasks.store');
 
 
 });

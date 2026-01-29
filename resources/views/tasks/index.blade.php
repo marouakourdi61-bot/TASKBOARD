@@ -9,6 +9,19 @@
 
     <div class="py-12">
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+        <!-- Messages de succès/erreur -->
+        @if(session('success'))
+            <div class="mb-6 bg-green-50 dark:bg-green-900 border border-green-200 dark:border-green-700 text-green-800 dark:text-green-200 px-4 py-3 rounded-lg">
+                {{ session('success') }}
+            </div>
+        @endif
+        
+        @if(session('error'))
+            <div class="mb-6 bg-red-50 dark:bg-red-900 border border-red-200 dark:border-red-700 text-red-800 dark:text-red-200 px-4 py-3 rounded-lg">
+                {{ session('error') }}
+            </div>
+        @endif
+        
         <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
             <!-- Header -->
             <div class="px-4 py-5 sm:px-6 border-b border-gray-200 dark:border-gray-700">
@@ -21,7 +34,13 @@
                             Liste de toutes vos tâches actives
                         </p>
                     </div>
-                    <div class="flex items-center space-x-2">
+                    <div class="flex items-center space-x-4">
+                        <a href="{{ route('tasks.create') }}" class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors flex items-center">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                            </svg>
+                            Ajouter une tâche
+                        </a>
                         <span class="text-sm text-gray-500 dark:text-gray-400">
                             {{ $taches->count() }} tâche(s) • Page {{ $taches->currentPage() }} sur {{ $taches->lastPage() }}
                         </span>
