@@ -136,9 +136,7 @@ class TaskController extends Controller
         }
     }
 
-    /**
-     * Update task status via AJAX
-     */
+    //updatae avec ajax
     public function updateStatus(Request $request, Task $task)
     {
         // Vérification que l'utilisateur est propriétaire
@@ -173,9 +171,33 @@ class TaskController extends Controller
         }
     }
 
-    //suprimer
-    public function destroy(string $id)
+    
+
+
+    
+    public function destroy(Task $task)
     {
-        //
+        // Vérification que l'utilisateur est propriétaire
+        if ($task->user_id !== auth()->id()) {
+            return redirect()
+                ->route('tasks.index')
+                ->with('error', 'Vous n\'êtes pas autorisé à supprimer cette tâche.');
+        }
+
+        try {
+            // Soft delete : archiver la tâche
+            $task->delete();
+            
+            // message de succès
+            return redirect()
+                ->route('tasks.index')
+                ->with('success', 'Tâche supprimée avec succès!');
+                
+        } catch (\Exception $e) {
+            // message d'erreur
+            return redirect()
+                ->route('tasks.index')
+                ->with('error', 'Erreur lors de la suppression: ' . $e->getMessage());
+        }
     }
 }

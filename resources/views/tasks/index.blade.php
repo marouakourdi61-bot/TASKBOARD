@@ -119,9 +119,15 @@
                                         </span>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                        <a href="{{ route('tasks.edit', $tache->id) }}" class="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300">
+                                        <a href="{{ route('tasks.edit', $tache->id) }}" class="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300 mr-3">
                                             Modifier
                                         </a>
+                                        <button 
+                                            onclick="confirmDeleteTask({{ $tache->id }}, '{{ $tache->title }}')"
+                                            class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300"
+                                        >
+                                            Supprimer
+                                        </button>
                                     </td>
                                 </tr>
                             @endforeach
@@ -169,3 +175,34 @@
     </div>
 </div>
 </x-app-layout>
+
+<script>
+    // Function to confirm task deletion
+    function confirmDeleteTask(taskId, taskTitle) {
+        if (confirm('Êtes-vous sûr de vouloir supprimer la tâche "' + taskTitle + '" ?\n\nCette action est irréversible.')) {
+            // Create form for deletion
+            var form = document.createElement('form');
+            form.method = 'POST';
+            form.action = '/taches/' + taskId;
+            form.style.display = 'none';
+            
+            // Add CSRF token
+            var csrfToken = document.createElement('input');
+            csrfToken.type = 'hidden';
+            csrfToken.name = '_token';
+            csrfToken.value = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+            form.appendChild(csrfToken);
+            
+            // Add method override for DELETE
+            var methodInput = document.createElement('input');
+            methodInput.type = 'hidden';
+            methodInput.name = '_method';
+            methodInput.value = 'DELETE';
+            form.appendChild(methodInput);
+            
+            // Submit form
+            document.body.appendChild(form);
+            form.submit();
+        }
+    }
+</script>
