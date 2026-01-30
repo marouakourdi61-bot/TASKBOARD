@@ -77,7 +77,7 @@
                     </div>
                 </div>
 
-                <!-- Tâches en retard -->
+                <!-- Tâches en retar -->
                 <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4">
                     <div class="flex items-center">
                         <div class="flex-shrink-0 bg-red-100 dark:bg-red-900 rounded-lg p-2">
