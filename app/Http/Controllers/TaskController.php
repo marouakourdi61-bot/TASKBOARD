@@ -44,7 +44,7 @@ class TaskController extends Controller
                 'description' => 'nullable|string',
                 'deadline' => 'nullable|date|after_or_equal:today',
                 'priority' => 'required|in:basse,moyenne,haute',
-                'status' => 'required|in:à_faire,en_cours,en_revue,terminé',
+                'status' => 'required|in:à_faire,en_cours,terminé',
             ]);
 
             // Création avec propriétai
@@ -111,7 +111,7 @@ class TaskController extends Controller
                 'description' => 'nullable|string',
                 'deadline' => 'nullable|date|after_or_equal:today',
                 'priority' => 'required|in:basse,moyenne,haute',
-                'status' => 'required|in:à_faire,en_cours,en_revue,terminé',
+                'status' => 'required|in:à_faire,en_cours,terminé',
             ]);
 
             // Mise à jour de la tâche
@@ -123,7 +123,7 @@ class TaskController extends Controller
                 'status' => $validated['status'],
             ]);
 
-            // Message succès et redirection
+            // Message succee et redirection
             return redirect()
                 ->route('tasks.index')
                 ->with('success', 'Tâche mise à jour avec succès!');
@@ -133,6 +133,43 @@ class TaskController extends Controller
             return redirect()
                 ->route('tasks.index')
                 ->with('error', 'Erreur lors de la mise à jour: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Update task status via AJAX
+     */
+    public function updateStatus(Request $request, Task $task)
+    {
+        // Vérification que l'utilisateur est propriétaire
+        if ($task->user_id !== auth()->id()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Vous n\'êtes pas autorisé à modifier cette tâche.'
+            ], 403);
+        }
+
+        try {
+            // Validation du statut
+            $validated = $request->validate([
+                'status' => 'required|in:à_faire,en_cours,terminé',
+            ]);
+
+            // Mise à jour du statut
+            $task->update([
+                'status' => $validated['status'],
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Statut mis à jour avec succès!'
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Erreur lors de la mise à jour: ' . $e->getMessage()
+            ], 500);
         }
     }
 

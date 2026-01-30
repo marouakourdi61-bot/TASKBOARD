@@ -128,11 +128,22 @@
                                             px-2 py-1 rounded">
                                             {{ ucfirst($tache->priority) }}
                                         </span>
-                                        <a href="{{ route('tasks.edit', $tache->id) }}" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
-                                            </svg>
-                                        </a>
+                                        <div class="flex items-center space-x-2">
+                                            <!-- Statut selector -->
+                                            <select 
+                                                onchange="updateTaskStatus({{ $tache->id }}, this.value)"
+                                                class="text-xs px-2 py-1 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 focus:outline-none focus:ring-1 focus:ring-gray-500"
+                                            >
+                                                <option value="à_faire" {{ $tache->status == 'à_faire' ? 'selected' : '' }}>À Faire</option>
+                                                <option value="en_cours" {{ $tache->status == 'en_cours' ? 'selected' : '' }}>En Cours</option>
+                                                <option value="terminé" {{ $tache->status == 'terminé' ? 'selected' : '' }}>Terminé</option>
+                                            </select>
+                                            <a href="{{ route('tasks.edit', $tache->id) }}" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                                                </svg>
+                                            </a>
+                                        </div>
                                     </div>
                                     <h4 class="font-medium text-gray-900 dark:text-white mb-2 text-sm">{{ $tache->title }}</h4>
                                     @if($tache->description)
@@ -172,11 +183,6 @@
                             {{ __('En Cours') }}
                             <span class="ml-3 text-sm font-normal text-gray-500 dark:text-gray-400">({{ $tachesEnCours->count() }})</span>
                         </h3>
-                        <button id="addTaskEnCours" class="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
-                            </svg>
-                        </button>
                     </div>
                     
                     <!-- Formulaire pour En Cours -->
@@ -250,11 +256,22 @@
                                             px-2 py-1 rounded">
                                             {{ ucfirst($tache->priority) }}
                                         </span>
-                                        <a href="{{ route('tasks.edit', $tache->id) }}" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
-                                            </svg>
-                                        </a>
+                                        <div class="flex items-center space-x-2">
+                                            <!-- Statut selector -->
+                                            <select 
+                                                onchange="updateTaskStatus({{ $tache->id }}, this.value)"
+                                                class="text-xs px-2 py-1 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 focus:outline-none focus:ring-1 focus:ring-gray-500"
+                                            >
+                                                <option value="à_faire" {{ $tache->status == 'à_faire' ? 'selected' : '' }}>À Faire</option>
+                                                <option value="en_cours" {{ $tache->status == 'en_cours' ? 'selected' : '' }}>En Cours</option>
+                                                <option value="terminé" {{ $tache->status == 'terminé' ? 'selected' : '' }}>Terminé</option>
+                                            </select>
+                                            <a href="{{ route('tasks.edit', $tache->id) }}" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                                                </svg>
+                                            </a>
+                                        </div>
                                     </div>
                                     <h4 class="font-medium text-gray-900 dark:text-white mb-2 text-sm">{{ $tache->title }}</h4>
                                     @if($tache->description)
@@ -263,26 +280,20 @@
                                     <div class="flex items-center justify-between">
                                         <div class="flex -space-x-2">
                                         </div>
-                                        @if($tache->deadline)
-                                            <div class="flex items-center text-xs text-gray-500 dark:text-gray-400">
-                                                <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                                                </svg>
-                                                {{ $tache->deadline->format('d M') }}
-                                            </div>
-                                        @endif
+                                        <div class="flex items-center space-x-2">
+                                            @if($tache->deadline)
+                                                <div class="flex items-center text-xs text-gray-500 dark:text-gray-400">
+                                                    <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                                    </svg>
+                                                    {{ $tache->deadline->format('d M') }}
+                                                </div>
+                                            @endif
+                                        </div>
                                     </div>
                                 </div>
                             @endforeach
                         @endif
-
-                        <!-- Add Task Button -->
-                        <button class="w-full p-3 border-2 border-dashed border-blue-300 dark:border-blue-600 rounded-lg text-blue-600 dark:text-blue-400 hover:border-blue-400 dark:hover:border-blue-500 hover:text-blue-700 dark:hover:text-blue-300 transition-colors flex items-center justify-center">
-                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
-                            </svg>
-                            {{ __('Ajouter une tâche') }}
-                        </button>
                     </div>
                 </div>
 
@@ -302,29 +313,59 @@
                     </div>
                     
                     <div class="p-4 space-y-3">
-                        <!-- Task Card 6 -->
-                        <div class="bg-white dark:bg-gray-700 rounded-lg p-4 shadow-sm border border-green-200 dark:border-green-600 cursor-pointer hover:shadow-md transition-shadow opacity-75">
-                            <div class="flex items-start justify-between mb-2">
-                                <span class="text-xs font-medium text-green-600 bg-green-100 dark:bg-green-900 px-2 py-1 rounded">Basse</span>
-                                <button class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"/>
-                                    </svg>
-                                </button>
-                            </div>
-                            <h4 class="font-medium text-gray-900 dark:text-white mb-2">Configuration de l'environnement CI/CD</h4>
-                            <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">GitHub Actions configuré</p>
-                            <div class="flex items-center justify-between">
-                                <div class="flex -space-x-2">
+                        @if($tachesTerminees->count() > 0)
+                            @foreach($tachesTerminees as $tache)
+                                <div class="bg-white dark:bg-gray-700 rounded-lg p-4 shadow-sm border border-green-200 dark:border-green-600 cursor-pointer hover:shadow-md transition-shadow opacity-75">
+                                    <div class="flex items-start justify-between mb-2">
+                                        <span class="text-xs font-medium 
+                                            @if($tache->priority == 'haute')
+                                                text-red-600 bg-red-100 dark:bg-red-900
+                                            @elseif($tache->priority == 'moyenne')
+                                                text-yellow-600 bg-yellow-100 dark:bg-yellow-900
+                                            @else
+                                                text-green-600 bg-green-100 dark:bg-green-900
+                                            @endif
+                                            px-2 py-1 rounded">
+                                            {{ ucfirst($tache->priority) }}
+                                        </span>
+                                        <div class="flex items-center space-x-2">
+                                            <!-- Statut selector -->
+                                            <select 
+                                                onchange="updateTaskStatus({{ $tache->id }}, this.value)"
+                                                class="text-xs px-2 py-1 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 focus:outline-none focus:ring-1 focus:ring-gray-500"
+                                            >
+                                                <option value="à_faire" {{ $tache->status == 'à_faire' ? 'selected' : '' }}>À Faire</option>
+                                                <option value="en_cours" {{ $tache->status == 'en_cours' ? 'selected' : '' }}>En Cours</option>
+                                                <option value="terminé" {{ $tache->status == 'terminé' ? 'selected' : '' }}>Terminé</option>
+                                            </select>
+                                            <a href="{{ route('tasks.edit', $tache->id) }}" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                                                </svg>
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <h4 class="font-medium text-gray-900 dark:text-white mb-2 text-sm">{{ $tache->title }}</h4>
+                                    @if($tache->description)
+                                        <p class="text-xs text-gray-600 dark:text-gray-400 mb-3">{{ Str::limit($tache->description, 80) }}</p>
+                                    @endif
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex -space-x-2">
+                                        </div>
+                                        <div class="flex items-center space-x-2">
+                                            @if($tache->deadline)
+                                                <div class="flex items-center text-xs text-gray-500 dark:text-gray-400">
+                                                    <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                                    </svg>
+                                                    {{ $tache->deadline->format('d/m') }}
+                                                </div>
+                                            @endif
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="flex items-center text-xs text-gray-500 dark:text-gray-400">
-                                    <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                                    </svg>
-                                    10 Jan
-                                </div>
-                            </div>
-                        </div>
+                            @endforeach
+                        @endif
 
                         <!-- Add Task Button -->
                         <button class="w-full p-3 border-2 border-dashed border-green-300 dark:border-green-600 rounded-lg text-green-600 dark:text-green-400 hover:border-green-400 dark:hover:border-green-500 hover:text-green-700 dark:hover:text-green-300 transition-colors flex items-center justify-center">
@@ -368,21 +409,6 @@
             document.querySelector('#formAFaire form').reset();
         }
 
-        // Formulaire En Cours
-        document.getElementById('addTaskEnCours').addEventListener('click', function() {
-            const form = document.getElementById('formEnCours');
-            form.classList.toggle('hidden');
-            if (!form.classList.contains('hidden')) {
-                form.querySelector('input[name="title"]').focus();
-            }
-        });
-
-        function cancelFormEnCours() {
-            document.getElementById('formEnCours').classList.add('hidden');
-            document.querySelector('#formEnCours form').reset();
-        }
-
-        
         // Handle form submission with loading state pour tous les formulaires
         document.querySelectorAll('form').forEach(form => {
             form.addEventListener('submit', function(e) {
@@ -402,5 +428,84 @@
                 }
             });
         });
+
+        // Function to update task status
+        function updateTaskStatus(taskId, newStatus) {
+            console.log('Updating task status:', taskId, 'to:', newStatus);
+            
+            // Show loading state
+            const select = event.target;
+            const originalValue = select.value;
+            select.disabled = true;
+            
+            // Get CSRF token
+            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+            console.log('CSRF token:', csrfToken);
+            
+            // Create form data instead of JSON
+            const formData = new FormData();
+            formData.append('status', newStatus);
+            formData.append('_method', 'PUT');
+            formData.append('_token', csrfToken);
+            
+            // Send request with form data
+            fetch('/taches/' + taskId + '/status', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'Accept': 'application/json'
+                }
+            })
+            .then(function(response) {
+                console.log('Response status:', response.status);
+                return response.json();
+            })
+            .then(function(data) {
+                console.log('Response data:', data);
+                if (data.success) {
+                    // Show success message
+                    showSuccessMessage(data.message);
+                    // Reload page to show task in new column
+                    setTimeout(function() {
+                        window.location.reload();
+                    }, 1000);
+                } else {
+                    // Show error message
+                    showErrorMessage(data.message || 'Erreur lors de la mise à jour');
+                    select.value = originalValue;
+                    select.disabled = false;
+                }
+            })
+            .catch(function(error) {
+                console.error('Error:', error);
+                showErrorMessage('Erreur lors de la mise à jour: ' + error.message);
+                select.value = originalValue;
+                select.disabled = false;
+            });
+        }
+
+        // Function to show success message
+        function showSuccessMessage(message) {
+            var div = document.createElement('div');
+            div.className = 'fixed top-4 right-4 bg-green-50 dark:bg-green-900 border border-green-200 dark:border-green-700 text-green-800 dark:text-green-200 px-4 py-3 rounded-lg z-50';
+            div.innerHTML = message;
+            document.body.appendChild(div);
+            
+            setTimeout(function() {
+                div.remove();
+            }, 3000);
+        }
+
+        // Function to show error message
+        function showErrorMessage(message) {
+            var div = document.createElement('div');
+            div.className = 'fixed top-4 right-4 bg-red-50 dark:bg-red-900 border border-red-200 dark:border-red-700 text-red-800 dark:text-red-200 px-4 py-3 rounded-lg z-50';
+            div.innerHTML = message;
+            document.body.appendChild(div);
+            
+            setTimeout(function() {
+                div.remove();
+            }, 3000);
+        }
     </script>
 </x-app-layout>

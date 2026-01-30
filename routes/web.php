@@ -34,7 +34,7 @@ Route::middleware('auth')->group(function () {
     
     Route::get('/taches/{task}/modifier', [TaskController::class, 'edit'])->name('tasks.edit');
     Route::put('/taches/{task}', [TaskController::class, 'update'])->name('tasks.update');
-
+    Route::put('/taches/{task}/status', [TaskController::class, 'updateStatus'])->name('tasks.updateStatus');
 
 });
 

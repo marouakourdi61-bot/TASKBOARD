@@ -106,7 +106,6 @@
                         >
                             <option value="à_faire" {{ old('status', $task->status) == 'à_faire' ? 'selected' : '' }}>À Faire</option>
                             <option value="en_cours" {{ old('status', $task->status) == 'en_cours' ? 'selected' : '' }}>En Cours</option>
-                            <option value="en_revue" {{ old('status', $task->status) == 'en_revue' ? 'selected' : '' }}>En Revue</option>
                             <option value="terminé" {{ old('status', $task->status) == 'terminé' ? 'selected' : '' }}>Terminé</option>
                         </select>
                         @error('status')
