@@ -1,16 +1,5 @@
 <x-app-layout>
     <x-slot name="header">
-        <div class="flex items-center justify-between">
-            <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-                {{ __('Tableau de bord') }}
-            </h2>
-            <button class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors flex items-center space-x-2">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
-                </svg>
-                <span>{{ __('Nouvelle tâche') }}</span>
-            </button>
-        </div>
     </x-slot>
 
     <div class="py-6">
@@ -22,20 +11,149 @@
                         <h1 class="text-2xl font-bold text-gray-900 dark:text-white">TaskBoard Project</h1>
                         <p class="text-gray-600 dark:text-gray-400 mt-1">{{ __('Gestion des tâches et projets') }}</p>
                     </div>
-                    <div class="flex items-center space-x-4">
-                        <div class="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-400">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+                    
+                </div>
+            </div>
+
+            <!-- Cartes de statistiques -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 mb-8">
+                <!-- Total des tâches -->
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0 bg-blue-100 dark:bg-blue-900 rounded-lg p-2">
+                            <svg class="w-5 h-5 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
                             </svg>
-                            <span>4 membres</span>
                         </div>
-                        <button class="p-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/>
-                            </svg>
-                        </button>
+                        <div class="ml-3">
+                            <p class="text-xs font-medium text-gray-600 dark:text-gray-400">Total</p>
+                            <p class="text-lg font-bold text-gray-900 dark:text-white">{{ $totalTasks }}</p>
+                        </div>
                     </div>
                 </div>
+
+                <!-- Tâches à faire -->
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0 bg-gray-100 dark:bg-gray-900 rounded-lg p-2">
+                            <svg class="w-5 h-5 text-gray-600 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                        </div>
+                        <div class="ml-3">
+                            <p class="text-xs font-medium text-gray-600 dark:text-gray-400">À faire</p>
+                            <p class="text-lg font-bold text-gray-900 dark:text-white">{{ $todoTasks }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tâches en cours -->
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0 bg-yellow-100 dark:bg-yellow-900 rounded-lg p-2">
+                            <svg class="w-5 h-5 text-yellow-600 dark:text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                            </svg>
+                        </div>
+                        <div class="ml-3">
+                            <p class="text-xs font-medium text-gray-600 dark:text-gray-400">En cours</p>
+                            <p class="text-lg font-bold text-gray-900 dark:text-white">{{ $inProgressTasks }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tâches complétées -->
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0 bg-green-100 dark:bg-green-900 rounded-lg p-2">
+                            <svg class="w-5 h-5 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                        </div>
+                        <div class="ml-3">
+                            <p class="text-xs font-medium text-gray-600 dark:text-gray-400">Terminées</p>
+                            <p class="text-lg font-bold text-gray-900 dark:text-white">{{ $completedTasks }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tâches en retard -->
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0 bg-red-100 dark:bg-red-900 rounded-lg p-2">
+                            <svg class="w-5 h-5 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                        </div>
+                        <div class="ml-3">
+                            <p class="text-xs font-medium text-gray-600 dark:text-gray-400">En retard</p>
+                            <p class="text-lg font-bold text-gray-900 dark:text-white">{{ $overdueTasks }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pourcentage de complétion -->
+                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0 bg-purple-100 dark:bg-purple-900 rounded-lg p-2">
+                            <svg class="w-5 h-5 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                            </svg>
+                        </div>
+                        <div class="ml-3">
+                            <p class="text-xs font-medium text-gray-600 dark:text-gray-400">Progression</p>
+                            <p class="text-lg font-bold text-gray-900 dark:text-white">{{ $completionPercentage }}%</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Barre de progression -->
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4 mb-8">
+                <div class="flex items-center justify-between mb-2">
+                    <h3 class="text-sm font-semibold text-gray-900 dark:text-white">Progression globale</h3>
+                    <span class="text-sm text-gray-600 dark:text-gray-400">{{ $completedTasks }} / {{ $totalTasks }} tâches</span>
+                </div>
+                <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3">
+                    <div class="bg-gradient-to-r from-blue-500 to-green-500 h-3 rounded-full transition-all duration-500" 
+                         style="width: {{ $completionPercentage }}%"></div>
+                </div>
+            </div>
+
+            <!-- Barre de recherche -->
+            <div class="mb-6">
+                <form method="GET" action="{{ route('dashboard') }}" class="flex gap-2">
+                    <div class="flex-1 flex gap-2">
+                        <input 
+                            type="text" 
+                            name="search" 
+                            value="{{ request('search') }}"
+                            placeholder="Rechercher une tâche..." 
+                            class="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-l-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        >
+                        <button 
+                            type="submit" 
+                            class="px-4 py-2 bg-blue-600 text-black rounded-r-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 flex items-center"
+                            title="Rechercher"
+                        >
+                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                            </svg>
+                            Rechercher
+                        </button>
+                    </div>
+                    @if(request('search'))
+                        <a 
+                            href="{{ route('dashboard') }}" 
+                            class="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 flex items-center gap-2"
+                        >
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                            </svg>
+                            Réinitialiser
+                        </a>
+                    @endif
+                </form>
             </div>
 
             <!-- Kanban Board -->
@@ -104,7 +222,7 @@
                                     <button type="button" onclick="cancelFormAFaire()" class="px-3 py-1 text-sm border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded hover:bg-gray-50 dark:hover:bg-gray-700">
                                         Annuler
                                     </button>
-                                    <button type="submit" class="px-3 py-1 text-sm bg-gray-600 text-white rounded hover:bg-gray-700">
+                                    <button type="submit" class="px-3 py-1 text-sm bg-gray-600 text-black rounded hover:bg-gray-700">
                                         Ajouter
                                     </button>
                                 </div>

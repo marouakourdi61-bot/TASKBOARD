@@ -32,6 +32,9 @@ Route::middleware('auth')->group(function () {
     Route::post('/taches', [TaskController::class, 'store'])->name('tasks.store');
 
     
+    Route::get('/statistiques', [TaskController::class, 'statistics'])->name('tasks.statistics');
+
+    
     Route::get('/taches/{task}/modifier', [TaskController::class, 'edit'])->name('tasks.edit');
     Route::put('/taches/{task}', [TaskController::class, 'update'])->name('tasks.update');
 

@@ -13,14 +13,63 @@ class TaskController extends Controller
 
     public function index()
     {
-        //  les taches de l'utilisateur connecté avec pagination
-        $query = Task::whereNull('deleted_at') 
-                    ->where('user_id', auth()->id()); 
+        // Récupérer le terme de recherche
+        $search = request('search');
         
+        // Base query pour les tâches de l'utilisateur
+        $query = Task::whereNull('deleted_at') 
+                    ->where('user_id', auth()->id());
+        
+        // Appliquer la recherche si un terme est fourni
+        if ($search) {
+            $query->where(function($q) use ($search) {
+                $q->where('title', 'LIKE', '%' . $search . '%')
+                  ->orWhere('description', 'LIKE', '%' . $search . '%');
+            });
+        }
+        
+        // Paginer les résultats en maintenant la recherche dans l'URL
         $taches = $query->orderBy('created_at', 'desc')
                        ->paginate(10);
         
         return view('tasks.index', compact('taches'));
+    }
+
+    /**
+     * Display task statistics.
+     */
+    public function statistics()
+    {
+        // Récupérer toutes les tâches de l'utilisateur (non supprimées)
+        $tasks = Task::whereNull('deleted_at')
+                    ->where('user_id', auth()->id())
+                    ->get();
+        
+        // Calculer les statistiques
+        $totalTasks = $tasks->count();
+        
+        $todoTasks = $tasks->where('status', 'à_faire')->count();
+        $inProgressTasks = $tasks->where('status', 'en_cours')->count();
+        $completedTasks = $tasks->where('status', 'terminé')->count();
+        
+        // Tâches en retard (deadline dépassée et non terminées)
+        $overdueTasks = $tasks->where('deadline', '<', now())
+                             ->where('status', '!=', 'terminé')
+                             ->count();
+        
+        // Pourcentage de complétion
+        $completionPercentage = $totalTasks > 0 
+            ? round(($completedTasks / $totalTasks) * 100, 1) 
+            : 0;
+        
+        return view('tasks.statistics', compact(
+            'totalTasks',
+            'todoTasks',
+            'inProgressTasks',
+            'completedTasks',
+            'overdueTasks',
+            'completionPercentage'
+        ));
     }
 
 

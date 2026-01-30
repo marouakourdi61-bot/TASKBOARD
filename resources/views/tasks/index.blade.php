@@ -47,6 +47,42 @@
                     </div>
                 </div>
             </div>
+            
+            <!-- Barre de recherche -->
+            <div class="mb-6">
+                <form method="GET" action="{{ route('tasks.index') }}" class="flex gap-2">
+                    <div class="flex-1 flex gap-2">
+                        <input 
+                            type="text" 
+                            name="search" 
+                            value="{{ request('search') }}"
+                            placeholder="Rechercher une tâche..." 
+                            class="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-l-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        >
+                        <button 
+                            type="submit" 
+                            class="px-4 py-2 bg-blue-600 text-black rounded-r-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 flex items-center"
+                            title="Rechercher"
+                        >
+                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                            </svg>
+                            Rechercher
+                        </button>
+                    </div>
+                    @if(request('search'))
+                        <a 
+                            href="{{ route('tasks.index') }}" 
+                            class="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 flex items-center gap-2"
+                        >
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                            </svg>
+                            Réinitialiser
+                        </a>
+                    @endif
+                </form>
+            </div>
 
             <!-- Table des tâches -->
             <div class="overflow-x-auto">
