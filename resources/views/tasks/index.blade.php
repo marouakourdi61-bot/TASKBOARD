@@ -48,9 +48,10 @@
                 </div>
             </div>
             
-            <!-- Barre de recherche -->
+            
+            <!-- Barre de recherche et filtres -->
             <div class="mb-6">
-                <form method="GET" action="{{ route('tasks.index') }}" class="flex gap-2">
+                <form method="GET" action="{{ route('tasks.index') }}" class="flex flex-col lg:flex-row gap-4">
                     <div class="flex-1 flex gap-2">
                         <input 
                             type="text" 
@@ -70,17 +71,62 @@
                             Rechercher
                         </button>
                     </div>
-                    @if(request('search'))
-                        <a 
-                            href="{{ route('tasks.index') }}" 
-                            class="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 flex items-center gap-2"
+                    
+                    <!-- Filtres par statut et priorité -->
+                    <div class="flex gap-2">
+                        <select 
+                            name="status" 
+                            onchange="this.form.submit()"
+                            class="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                         >
+                            <option value="">Statut</option>
+                            <option value="à_faire" {{ request('status') == 'à_faire' ? 'selected' : '' }}>À Faire</option>
+                            <option value="en_cours" {{ request('status') == 'en_cours' ? 'selected' : '' }}>En Cours</option>
+                            <option value="terminé" {{ request('status') == 'terminé' ? 'selected' : '' }}>Terminées</option>
+                        </select>
+                        
+                        <select 
+                            name="priority" 
+                            onchange="this.form.submit()"
+                            class="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        >
+                            <option value="">Priorité</option>
+                            <option value="basse" {{ request('priority') == 'basse' ? 'selected' : '' }}>Basse</option>
+                            <option value="moyenne" {{ request('priority') == 'moyenne' ? 'selected' : '' }}>Moyenne</option>
+                            <option value="haute" {{ request('priority') == 'haute' ? 'selected' : '' }}>Haute</option>
+                        </select>
+                        
+                        <!-- Tri par deadline -->
+                        <a href="{{ route('tasks.index', array_merge(request()->all(), ['deadline_sort' => request('deadline_sort') == 'asc' ? 'desc' : 'asc'])) }}" 
+                           class="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 flex items-center gap-2"
+                           title="Trier par deadline">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                             </svg>
-                            Réinitialiser
+                            Deadline
+                            @if(request('deadline_sort') == 'asc')
+                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"/>
+                                </svg>
+                            @else
+                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                                </svg>
+                            @endif
                         </a>
-                    @endif
+                        
+                        @if(request('search') || request('priority') || request('status') || request('deadline_sort'))
+                            <a 
+                                href="{{ route('tasks.index') }}" 
+                                class="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 flex items-center gap-2"
+                            >
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                                </svg>
+                                Réinitialiser
+                            </a>
+                        @endif
+                    </div>
                 </form>
             </div>
 

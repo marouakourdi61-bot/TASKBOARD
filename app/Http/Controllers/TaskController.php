@@ -13,8 +13,11 @@ class TaskController extends Controller
 
     public function index()
     {
-        // Récupérer le terme de recherche
+        // Récupérer les filtres
         $search = request('search');
+        $priority = request('priority');
+        $status = request('status');
+        $deadlineSort = request('deadline_sort', 'desc'); // Par défaut : décroissant
         
         // Base query pour les tâches de l'utilisateur
         $query = Task::whereNull('deleted_at') 
@@ -28,9 +31,23 @@ class TaskController extends Controller
             });
         }
         
+        // Appliquer le filtre de priorité si une priorité est fournie
+        if ($priority) {
+            $query->where('priority', $priority);
+        }
+        
+        // Appliquer le filtre de statut si un statut est fourni
+        if ($status) {
+            $query->where('status', $status);
+        }
+        
+        // Appliquer le tri par deadline
+        $deadlineOrder = $deadlineSort == 'asc' ? 'asc' : 'desc';
+        $nullOrder = $deadlineSort == 'asc' ? 'asc' : 'desc'; // NULL en dernier pour asc, en premier pour desc
+        $query->orderByRaw("ISNULL(deadline) $nullOrder, deadline $deadlineOrder");
+        
         // Paginer les résultats en maintenant la recherche dans l'URL
-        $taches = $query->orderBy('created_at', 'desc')
-                       ->paginate(10);
+        $taches = $query->paginate(10);
         
         return view('tasks.index', compact('taches'));
     }
