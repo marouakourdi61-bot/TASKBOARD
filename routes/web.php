@@ -30,6 +30,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/taches', [TaskController::class, 'index'])->name('tasks.index');
     Route::get('/taches/creer', [TaskController::class, 'create'])->name('tasks.create');
     Route::post('/taches', [TaskController::class, 'store'])->name('tasks.store');
+    
+    // Route AJAX pour la recherche sur le dashboard
+    Route::get('/dashboard/search', [DashboardController::class, 'search'])->name('dashboard.search');
 
     
     Route::get('/statistiques', [TaskController::class, 'statistics'])->name('tasks.statistics');

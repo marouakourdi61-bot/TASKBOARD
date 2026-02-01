@@ -127,13 +127,15 @@
                     <div class="flex-1 flex gap-2">
                         <input 
                             type="text" 
+                            id="search-input"
                             name="search" 
                             value="{{ request('search') }}"
                             placeholder="Rechercher une tâche..." 
                             class="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-l-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                         >
                         <button 
-                            type="submit" 
+                            type="button"
+                            id="search-btn"
                             class="px-4 py-2 bg-blue-600 text-black rounded-r-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 flex items-center"
                             title="Rechercher"
                         >
@@ -187,23 +189,12 @@
                             @endif
                         </a>
                         
-                        @if(request('search') || request('priority') || request('status') || request('deadline_sort'))
-                            <a 
-                                href="{{ route('dashboard') }}" 
-                                class="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 flex items-center gap-2"
-                            >
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-                                </svg>
-                                Réinitialiser
-                            </a>
-                        @endif
                     </div>
                 </form>
             </div>
 
             <!-- Kanban Board -->
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div id="kanban-board" class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <!-- À Faire Column -->
                 <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
                     <div class="p-4 border-b border-gray-200 dark:border-gray-700">
@@ -727,5 +718,89 @@
                 form.submit();
             }
         }
+
+        // AJAX Search and Filter functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('search-input');
+            const searchBtn = document.getElementById('search-btn');
+            const kanbanBoard = document.getElementById('kanban-board');
+
+            // Function to perform AJAX search
+            function performSearch() {
+                console.log('performSearch called');
+                
+                const searchValue = searchInput.value.trim();
+                console.log('Search value:', searchValue);
+
+                // Show loading state
+                kanbanBoard.style.opacity = '0.5';
+                
+                // Reset opacity after 5 seconds in case of error
+                setTimeout(() => {
+                    kanbanBoard.style.opacity = '1';
+                }, 5000);
+                
+                // Only search if there's a value
+                if (!searchValue) {
+                    kanbanBoard.style.opacity = '1';
+                    return;
+                }
+                
+                const url = `/dashboard/search?search=${encodeURIComponent(searchValue)}`;
+                console.log('Fetching URL:', url);
+                
+                // Make AJAX request
+                fetch(url, {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'text/html',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
+                .then(response => {
+                    console.log('Response status:', response.status);
+                    return response.text();
+                })
+                .then(html => {
+                    console.log('Response received, length:', html.length);
+                    
+                    // Parse the HTML response
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(html, 'text/html');
+                    const newKanbanBoard = doc.getElementById('kanban-board');
+                    
+                    if (newKanbanBoard) {
+                        kanbanBoard.innerHTML = newKanbanBoard.innerHTML;
+                        kanbanBoard.style.opacity = '1';
+                        console.log('Kanban board updated');
+                    } else {
+                        console.error('Kanban board not found in response');
+                        kanbanBoard.style.opacity = '1';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    kanbanBoard.style.opacity = '1';
+                    showErrorMessage('Erreur lors de la recherche');
+                });
+            }
+
+            // Event listeners
+            searchBtn.addEventListener('click', performSearch);
+            
+            searchInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    performSearch();
+                }
+            });
+
+            // Auto-search on each keystroke with shorter debounce
+            let searchTimeout;
+            searchInput.addEventListener('input', function() {
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(performSearch, 300); // Plus rapide : 300ms
+            });
+        });
     </script>
 </x-app-layout>
