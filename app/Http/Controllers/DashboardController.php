@@ -42,7 +42,8 @@ class DashboardController extends Controller
         $deadlineOrder = $deadlineSort == 'asc' ? 'asc' : 'desc';
         $nullOrder = $deadlineSort == 'asc' ? 'asc' : 'desc'; // NULL en dernier pour asc, en premier pour desc 
         
-        // Récupérer les tâches par statut
+        // Récupérer tâches par statu
+
         if ($status) {
             // Si un filtre de statut est appliqué, ne récupérer que ce statut
             if ($status == 'à_faire') {
