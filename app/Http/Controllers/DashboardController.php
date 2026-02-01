@@ -14,7 +14,7 @@ class DashboardController extends Controller
         $search = request('search');
         $priority = request('priority');
         $status = request('status');
-        $deadlineSort = request('deadline_sort', 'desc'); // Par défaut : décroissant
+        $deadlineSort = request('deadline_sort', 'desc');
         
         // Base query pour les tâches de l'utilisateur
         $baseQuery = Task::whereNull('deleted_at')
@@ -40,12 +40,12 @@ class DashboardController extends Controller
         
         // Définir l'ordre de tri par deadline
         $deadlineOrder = $deadlineSort == 'asc' ? 'asc' : 'desc';
-        $nullOrder = $deadlineSort == 'asc' ? 'asc' : 'desc'; // NULL en dernier pour asc, en premier pour desc 
+        $nullOrder = $deadlineSort == 'asc' ? 'asc' : 'desc'; 
         
         // Récupérer tâches par statu
 
         if ($status) {
-            // Si un filtre de statut est appliqué, ne récupérer que ce statut
+            // Si un filtre de statut est appliqué ne requper que ce statut
             if ($status == 'à_faire') {
                 $tachesAFaire = $baseQuery->orderByRaw("ISNULL(deadline) $nullOrder, deadline $deadlineOrder")->get();
                 $tachesEnCours = collect([]);
